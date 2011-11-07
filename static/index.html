@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>
+        <script type="text/javascript" src="js/faye-browser-min.js"></script>
+        <script type="text/javascript" src="js/rpmap.js"></script>
+
+        <link type="text/css" href="css/rpmap.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div class="modal" id="credentials">
+            <h1>Connect to or create a map</h1>
+            <form>
+                <input type="text" name="charname" placeholder="Character Name" />
+                <input type="text" name="mapname" placeholder="Map Name" />
+                <button>Connect</button>
+            </form>
+        </div>
+        <div class="modal" id="new-map-conf">
+            <h1>New map</h1>
+            <p>This will create a new map. If you wanted to join an existing
+            map, press cancel and don't spell it wrong.</p>
+            <button class="ok">OK</button>
+            <button class="cancel">Cancel</button>
+        </div>
+        <canvas id="map"></canvas>
+    </body>
+</html>

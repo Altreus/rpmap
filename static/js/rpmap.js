@@ -1,5 +1,17 @@
 $(function() {
-    var credentials = {};
+    var PseudoGuid = new (function() {
+        this.empty = "00000000-0000-0000-0000-000000000000";
+        this.GetNew = function() {
+            var fourChars = function() {
+                    return (((1 + Math.random()) * 0x10000)|0).toString(16).substring(1).toUpperCase();
+            }
+            return (fourChars() + fourChars() + "-" + fourChars() + "-" + fourChars() + "-" + fourChars() + "-" + fourChars() + fourChars() + fourChars());
+        };
+    })();
+
+    var credentials = {},
+        client,
+        created = {};
 
     function processConnect(response) {
         if (response.available) {
@@ -7,6 +19,8 @@ $(function() {
 
             $('#new-map-conf button.ok').click(function() {
                 subscribe();
+                $('#new-map-conf').data('overlay').close();
+                $('#credentials').data('overlay').close();
             });
             $('#new-map-conf button.cancel').click(function() {
                 $('#new-map-conf').data('overlay').close();
@@ -15,12 +29,33 @@ $(function() {
     }
 
     function subscribe() {
-        var client = new Faye.Client('http://localhost:8000/comet');
+        client = new Faye.Client('http://localhost:8000/comet');
         var sub = client.subscribe('/map', function(message) {
-            console.log(message);
+            if (! created[message.id]) {
+                if (! $('#' + message.id).length) {
+                    $('#map')
+                        .data('drawing')
+                        .createObject({ 
+                            tool: data.tool, 
+                            data: data.data,
+                            id: data.id
+                        });
+                }
+                else {
+                    $('#map')
+                        .data('drawing')
+                        .updateObject({ 
+                            tool: data.tool, 
+                            data: data.data,
+                            id: data.id
+                        });
+
+                }
+            }
         });
 
         sub.callback(function() {
+            console.log('connected OK');
         });
 
         sub.errback(function(error) {
@@ -30,6 +65,25 @@ $(function() {
         client.publish('/map', credentials);
     }
 
+    $(document).bind('drawing.begin', function(e, f) {
+        if (! f.element.node.id) {
+            var tempId = PseudoGuid.GetNew();
+            f.element.node.id = tempId;
+        }
+
+        if (! created[f.element.node.id]) {
+            created[f.element.node.id] = f.element;
+        }
+    });
+
+    $(document).bind('drawing.change', function(e,f) {
+        client.publish('/map', {
+            tool: $(f.element.node).data('tool'),
+            data: f.element.attr('path') + "",
+            type: 'update',
+            id: f.element.node.id
+        });
+    });
     $('#credentials').overlay({
         closeOnClick: false,
         closeOnEsc: false,

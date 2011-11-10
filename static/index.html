@@ -5,6 +5,11 @@
         <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>
         <script type="text/javascript" src="js/faye-browser-min.js"></script>
         <script type="text/javascript" src="js/rpmap.js"></script>
+        <script type="text/javascript" src="js/raphael-min.js"></script>
+        <script type="text/javascript" src="js/jquery-drawing.js"></script>
+        <script type="text/javascript">
+            $(function() { $('#map').drawing() });
+        </script>
 
         <link type="text/css" href="css/rpmap.css" rel="stylesheet" />
     </head>
@@ -25,6 +30,6 @@
             <button class="ok">OK</button>
             <button class="cancel">Cancel</button>
         </div>
-        <canvas id="map"></canvas>
+        <div id="map"></div>
     </body>
 </html>

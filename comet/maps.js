@@ -1,7 +1,8 @@
 var maps = {};
 
-function handleData(message) {
+function handleDataMessage(message) {
     var data = message.data;
+
 
     if (data.character && data.map && !maps[data.map]) {
         maps[data.map] = {
@@ -18,14 +19,16 @@ module.exports = {
             if (message.channel != '/map') 
                 return callback(message);
 
-//            if (message.data) {
-//                handleDataMessage(message);
-//            }
+            if (message.data) {
+                handleDataMessage(message);
+            }
             return callback(message);
         }
     },
 
     checkMap: function(mapname) {
+        console.log(mapname);
+        console.log(maps);
         return maps[mapname] ? false : true;
     }
 };

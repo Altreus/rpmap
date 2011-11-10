@@ -8,7 +8,7 @@ var server = connect.createServer(
         app.get('/checkMap/:mapname', function(req, res, next) {
             res.writeHead(200);
             res.write('{ "available": ' +
-                (maps.checkMap(req.params.id) ? 1 : 0) + '}');
+                (maps.checkMap(req.params.mapname) ? 1 : 0) + '}');
             res.end();
         });
     })

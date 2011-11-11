@@ -26,13 +26,20 @@ $(function() {
                 $('#new-map-conf').data('overlay').close();
             });
         }
+        else { 
+            subscribe();
+            $('#credentials').data('overlay').close();
+        }
     }
 
     function subscribe() {
         client = new Faye.Client('http://localhost:8000/comet');
-        var sub = client.subscribe('/map', function(message) {
-            if (! created[message.id]) {
-                if (! $('#' + message.id).length) {
+        var sub = client.subscribe('/map', function(data) {
+            if (! data.id) return;
+
+            // don't do this if we're the one who created it
+            if (! created[data.id]) {
+                if (! $('#' + data.id).length) {
                     $('#map')
                         .data('drawing')
                         .createObject({ 

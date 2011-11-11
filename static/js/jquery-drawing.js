@@ -79,6 +79,10 @@ $.fn.drawing = function() {
         tools[tool].mousemove(e);
     });
 
+    canvas.bind('drawing.begin', function(e,f) {
+        $(f.element.node).data('tool', tool);
+    });
+
     canvas.bind('drawing.change', function(e){
     });
 

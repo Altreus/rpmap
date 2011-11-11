@@ -1,0 +1,9 @@
+RP map
+
+Requires node.js
+
+requires node-faye http://faye.jcoglan.com/node.html
+$ npm install faye
+
+requires node-connect
+$ npm install connect

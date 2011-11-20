@@ -1,27 +1,27 @@
 var maps = {};
-
-function handleDataMessage(message) {
-    var data = message.data;
-
-
-    if (data.character && data.map && !maps[data.map]) {
-        maps[data.map] = {
-            character: data.character,
-            ownerId: message.clientId
-        };
-    }
-}
+var chars = {};
 
 module.exports = {
     fayeExtension: {
         incoming: function(message, callback) {
+            console.log('message');
             console.log(message);
-            if (message.channel != '/map') 
-                return callback(message);
 
-            if (message.data) {
-                handleDataMessage(message);
+            if (message.channel == '/meta/subscribe') {
+                var map = message.subscription.substr(5);
+
+                if (! maps[map]) {
+                    maps[map] = {
+                        ownerId: message.clientId
+                    };
+                }
             }
+
+            if (message.channel.indexOf('/map') != -1) {
+                if (!chars[message.clientId])
+                    chars[message.clientId] = message.data;
+            }
+
             return callback(message);
         }
     },

@@ -34,32 +34,33 @@ $(function() {
 
     function subscribe() {
         client = new Faye.Client('http://localhost:8000/comet');
-        var sub = client.subscribe('/map', function(data) {
-            if (! data.id) return;
+        var sub = client.subscribe('/map/' + credentials.map, 
+            function(data) {
+                if (! data.id) return;
 
-            // don't do this if we're the one who created it
-            if (! created[data.id]) {
-                if (! $('#' + data.id).length) {
-                    $('#map')
-                        .data('drawing')
-                        .createObject({ 
-                            tool: data.tool, 
-                            data: data.data,
-                            id: data.id
-                        });
-                }
-                else {
-                    $('#map')
-                        .data('drawing')
-                        .updateObject({ 
-                            tool: data.tool, 
-                            data: data.data,
-                            id: data.id
-                        });
+                // don't do this if we're the one who created it
+                if (! created[data.id]) {
+                    if (! $('#' + data.id).length) {
+                        $('#map')
+                            .data('drawing')
+                            .createObject({ 
+                                tool: data.tool, 
+                                data: data.data,
+                                id: data.id
+                            });
+                    }
+                    else {
+                        $('#map')
+                            .data('drawing')
+                            .updateObject({ 
+                                tool: data.tool, 
+                                data: data.data,
+                                id: data.id
+                            });
 
+                    }
                 }
-            }
-        });
+            });
 
         sub.callback(function() {
             console.log('connected OK');
@@ -69,7 +70,7 @@ $(function() {
             alert(error.message);
         });
 
-        client.publish('/map', credentials);
+        client.publish('/map/' + credentials.map, credentials);
     }
 
     $(document).bind('drawing.begin', function(e, f) {
@@ -84,7 +85,7 @@ $(function() {
     });
 
     $(document).bind('drawing.change', function(e,f) {
-        client.publish('/map', {
+        client.publish('/map/' + credentials.map, {
             tool: $(f.element.node).data('tool'),
             data: f.element.attr('path') + "",
             type: 'update',

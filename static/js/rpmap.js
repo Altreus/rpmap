@@ -28,6 +28,7 @@ $(function() {
         }
         else { 
             subscribe();
+            fetchData();
             $('#credentials').data('overlay').close();
         }
     }
@@ -70,7 +71,18 @@ $(function() {
             alert(error.message);
         });
 
-        client.publish('/map/' + credentials.map, credentials);
+        client.publish('/map/' + credentials.map, 
+            $.extend({}, { type: 'hail' }, credentials));
+    }
+
+    function fetchData() {
+        $.get('/fetch/' + credentials.map, function(r){
+            $.each(r.order, function(i, id) {
+                $('#map')
+                    .data('drawing')
+                    .createObject(r.objects[id]);
+            });
+        }, 'json');
     }
 
     $(document).bind('drawing.begin', function(e, f) {

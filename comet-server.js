@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var connect = require('connect'),
     faye = require('faye'),
     maps = require('./comet/maps.js');
@@ -9,6 +11,11 @@ var server = connect.createServer(
             res.writeHead(200);
             res.write('{ "available": ' +
                 (maps.checkMap(req.params.mapname) ? 1 : 0) + '}');
+            res.end();
+        });
+        app.get('/fetch/:mapname', function(req, res, next) {
+            res.writeHead(200);
+            res.write(JSON.stringify(maps.fetch(req.params.mapname)));
             res.end();
         });
     })
